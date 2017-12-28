@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Breadth-First Search
+
+#TODO:
+28-12-17: Check results of shortestPath graphs are correct (cf. M Newman)
 """
 import numpy as np
 import network_toolkit as nt   #I'm putting our tools for network analysis here
@@ -37,6 +40,8 @@ the root node
     distances = [-1 for i in range(n)]   #Create fixed length array of length n. -1 indicates distance is no known path from that node
     buffer = [None for i in range(n)]   #Buffer, each element is a label of a node in the network
     shortestPathTree = list()   #Returned as a list of tuples [(from, to)]
+    #As noted by M Newman, this is not really the shortestPathTree but an acyclic directed\
+    # graph
     
     buffer[0] = vertices.index(root)   #Place the index of the root vertex in the buffer
     read_posn = 0   #Set the read pointer to it
@@ -69,10 +74,13 @@ the root node
                     shortestPathTree.append((mlabel,klabel))
                     write_posn += 1
                 
-#                if distances[k]==d:
+                if distances[m]==d+1:
+                    #m already has an assigned \
+                    # distance d+1, so we know there is another shortest path\
+                    # to it through k
                     #Code for shortest path logging here
-                    #TOD0
-#                    print('Something different would happen here if you wanted the shortest paths themselves')
+                    shortestPathTree.append((mlabel,klabel))
+                    print('Something different would happen here if you wanted the shortest paths themselves')
                 if edge_weight not in [0,1]:
                     raise NotImplemented("Weighted networks are not considered")
         #Update variables
