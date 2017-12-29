@@ -4,6 +4,7 @@ We are accustomed to hearing the terms "social media" or "mass media" in referen
 
 Online social networks, which quantify human behaviour in a way not possible before, have become an important part of social relations worldwide, with sites such as Facebook exceeding 2 billion users. These media are of great significance in many industries ranging from government, perhaps in pushing across a certain political agenda, to marketing companies to advertise and increase sales of a product or service. 
 The theory of complex networks is well-established [1] and meaningful insights have already been made by applying concepts from physics to social sciences in the context of the spread of ideas [2], thermodynamics [3], and the scaling behaviour of cities and companies [4].
+
 Our project aims to investigate a dataset containing timestamped information on Facebook friends & wall posts from New Orleans [5]. Python code will be used to probe a model of the network to extract metrics such as centrality measures, entropy, clustering coefficients and critical thresholds to obtain an understanding of the network’s resilience, as well as to discover analogies with physical media in terms of thermodynamics and statistical mechanics.
 
 Other considered components are:
