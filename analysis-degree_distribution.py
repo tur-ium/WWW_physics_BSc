@@ -54,7 +54,7 @@ def plot_distribution(d,name,n=100):
     plt.ylabel('Cumulative frequency')
 #activity_data_undirected= loadActivityData('Data/',False)
 
-#activity_data_multigraph= loadActivityData('Data/',True)
+activity_data_multigraph= loadActivityData('Data/',True)
 
 degree_dict = dict(nx.degree(activity_data_multigraph))   #Total # of posts sent AND received (undirected) as a dict
 in_degree_dict = dict(activity_data_multigraph.in_degree())   #Total # of posts received
