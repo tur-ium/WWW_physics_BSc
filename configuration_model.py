@@ -26,7 +26,7 @@ def load_empirical_degree_dist(dataPath):
         degree_dict[n] = degree_dict_original[n]
     return degree_dict
 
-def generateConfigNetwork(degree_dict,network=nx.Graph(),self_loops=False):
+def generateConfigNetwork(degree_dict,network=nx.Graph(),allow_self_loops=False):
     '''Generate a configurational network based on a dictionary of degrees (keys\
 = node, values = degree of node.
     PARAMETERS
@@ -41,6 +41,8 @@ def generateConfigNetwork(degree_dict,network=nx.Graph(),self_loops=False):
 '''
     node_list = list(degree_dict.keys())
     k_list = list(degree_dict.values())   #Degree of each node, is returned in same order as keys
+    self_loops = 0   #Number of self-edges
+    parallel_edges = 0   #Number of parallel edges
     
     if sum(k_list) % 2 != 0:
         raise Exception("Sum of degree distribution must be an even number")
@@ -48,7 +50,7 @@ def generateConfigNetwork(degree_dict,network=nx.Graph(),self_loops=False):
     s = 0   #Index of current stub
     stub_dict = dict()   #Stub -> node on which the stub can be found
     #ADD STUBS TO EACH NODE
-    for n, k in degree_dict.items():
+    for n, k in degree_dict.items():  #n=node label, k = degree
         #Add k stubs to the dict of stubs for k, n in degree_dict.items():
         i = 0
         while i < k:
@@ -70,28 +72,26 @@ def generateConfigNetwork(degree_dict,network=nx.Graph(),self_loops=False):
         t = stub_dict.pop(t_stub_idx)
         #print(t)
         
-        if t==s:
-            if self_loops:
-                if not t in F[s].keys():
-                    F.add_edge(s,t)
         if not t in F[s].keys() and t != s:
+            #Edge does not exist and it is not a self-loop
             F.add_edge(s,t)
             F[s][t]['weight'] = 1
         elif t in F[s].keys():
+            #Edge does not exist
+            parallel_edges+=1
             F[s][t]['weight'] += 1
-            print("DOUBLE EDGE")
-        elif t == s:
-            print('SELF-LOOP')
-            #This is a problem as the node will have one greater degree than it should
-            # but for large networks the probability of a self-loop on a random graph\
-            # will be small
         else:
-            raise Exception("Unknown error")
+            #Self-loop
+            self_loops+=1
+            if allow_self_loops:
+                if not t in F[s].keys():
+                    F.add_edge(s,t)
+            #raise Exception("Unknown error")
     return F
 
 #TESTING: LIMIT TO ONLY LAST N nodes
-degree_dict_original = pickle.load(open('{}/G_A-degree_dict.pkl'.format(dataPath),'rb'))
-degree_dict = load_empirical_degree_dist(dataPath)
+#degree_dict_original = pickle.load(open('{}/G_A-degree_dict.pkl'.format(dataPath),'rb'))
+#degree_dict = load_empirical_degree_dist(dataPath)
 
 #TESTING: PRINT DEGREE DIST
 #if len(degree_dict) < 100:
