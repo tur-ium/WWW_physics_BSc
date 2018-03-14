@@ -14,4 +14,8 @@ class Erdos_Renyi():
     def iterate(self):
         from_user = random.choice(self.node_list)
         to_user = random.choice(self.node_list)
-        self.G.add_edge(from_user,to_user)
+        if not self.G.has_edge(from_user,to_user):
+            self.G.add_edge(from_user,to_user)
+            self.G[from_user][to_user]['weight'] = 1
+        else:
+            self.G[from_user][to_user]['weight'] += 1

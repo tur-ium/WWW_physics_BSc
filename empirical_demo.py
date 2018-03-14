@@ -9,31 +9,50 @@ ANALYSIS OF ACTIVITY NETWORK
 dataLoaded = False
 #%%
 import empirical.Timeslice as ts
-import time
 import networkx_extended as nx
-from measure_new import computeLCS, getDegreeDist
+from measure_new import computeLCS, getDegreeDist, computeClusteringCoefficient
 from matplotlib import pyplot as plt
 import random
 import datetime
+import numpy as np
 
-from AR_cycle import plot
 
 #%% PARAMETERS
-dataDirectory = "C:/Users/admin/Documents/Physics/year 3/WWWPhysics-PC/empirical/Data/TimeSlicedDataNew/TimeSlicedData"
 
+#TIMESLICE PARAMETERS
+dataDirectory = "C:/Users/admin/Documents/Physics/year 3/WWWPhysics-PC/empirical/Data/TimeSlicedDataNew/TimeSlicedData"
 
 YEAR = '2008'
 MONTH = 'DEC'
 ENDYEAR = '2009'   
 ENDMONTH = 'JAN' #End at the BEGINNING of this month
 
-beginTime = ts.TIME_DICT[YEAR][MONTH]  #NOTE Time at beginning of month
-endTime = ts.TIME_DICT[ENDYEAR][ENDMONTH] #NOTE Time at beginning of month
+#THERMODYNAMIC MODELLING PARAMETERS
+stepsize =  100  #Number of edges to add between calculations
+calcThresh = 1  #Number of edges to add before beginning calculations
+#Order of addition
+CHRONOLOGICAL = 1
+RANDOM = 2
+order = CHRONOLOGICAL
+
+#SAVING DATA PARAMETERS
+saveFile = 'incoming_results/empirical_{}_{}_step_{}.csv'.format(YEAR,MONTH,stepsize)
+
+#%% PREPARE FOR WRITING DATA
+try:
+    f = open(saveFile,'w')
+except IOError:
+    print("Problem opening file,adding a number to the end")
+    f= open(saveFile+'1','w')
+
+
 #%% LOAD DATA
 
 #weightedGraph = ts.loadGEXF("C:/Users/admin/Documents/Physics/year 3/WWWPhysics-PC/empirical/Data/WeightedNetwork/2008_DEC_WeightedGraph.gexf")
 
-dataLoaded = False
+beginTime = ts.TIME_DICT[YEAR][MONTH]  #NOTE Time at beginning of month
+endTime = ts.TIME_DICT[ENDYEAR][ENDMONTH] #NOTE Time at beginning of month
+
 if not dataLoaded:
     #READ ORIGINAL EDGE_LIST FOR WHOLE NETWORK
     edgeList = ts.readEdgelistFromPath('empirical/Data/activity_network_edge_list.txt',isWeighted=True)
@@ -60,7 +79,6 @@ class Empirical:
     def __init__(self):
         pass
 
-stepsize = 100
 #%% CONVERT TO CHRONOLOGY
 #Chronology is a dictionary of lists of wall posts sent at a given millisecond
 chronology = dict()  #{time: ((sender, target),(sender,target))}
@@ -148,6 +166,7 @@ If verbose=True (default: True) prints results at each calculation step
     acc_list = list()  #Average clustering coefficient
     
     G_model = nx.Graph()   #Empty graph
+    
     V = len(G_empirical.edges())
     print("WALL POSTS TO ADD {}".format(V))
     G_model.add_nodes_from(node_list)   #Add nodes (so as to make sure that the average degree is averaged over all users who were active in the month)
@@ -175,63 +194,92 @@ If verbose=True (default: True) prints results at each calculation step
                 #print(node_weights)
                 mean_degree = sum(dict(nx.degree(G_model)).values())/len(G_model)
                 if verbose==True:
-                    print("Step: {}, LCS = {}, ACC = {:.3g}, mean_degree = {}".format(n,lcs,acc,mean_degree))
+                    print("Step: {}, LCS = {}, ACC = {:.3g}, mean_degree = {:.3g}".format(n,lcs,acc,mean_degree))
         
     return G_model,t_list, lcs_list,acc_list
 
-#%%
-stepsize = 100
+def removeMessages(G_model,step,Vmin,verbose=False):
+    '''Remove messages until the network has a volume (number of wall posts) \
+Vmin (default:0).If verbose=True (default: True) prints results at each calculation step 
+    RETURNS
+    ---
+    G_model: nx Graph object
+        The model network after adding edges
+    m_list: list
+        Points at which measurements were taken in terms of number of wall posts
+    lcs_list: list
+        List of largest component sizes at network sizes in m_list
+    acc_list: list
+        List of average clustering coefficients at network sizes in m_list
+'''  
+    m_list = list()
+    lcs_list = list()  #Largest component
+    acc_list = list()  #Average clustering coefficient
+    
+    edge_list = list(G_model.edges(data='weight'))
 
-CHRONOLOGICAL = 1
-RANDOM = 2
-
-calcThresh = 1
-
-order = CHRONOLOGICAL
-G,t_list,lcs_list,acc_list = addMessages(G_A,stepsize,beginTime,endTime,order=order,calcThresh=calcThresh,verbose=True)#
+    weighted_degree = dict(G.degree(weight='weight')).values()
+    V = sum(weighted_degree)/2
+    while V > Vmin:
+        edge_idx = random.choice(range(len(edge_list)))  #Edge index
+        edge = edge_list[edge_idx]
+        
+        from_user = edge[0]
+        to_user = edge[1]
+        
+        if G_model[from_user][to_user]['weight']>1:
+            G_model[from_user][to_user]['weight']-=1
+        else:
+            edge_list.pop(edge_idx)
+            G_model.remove_edge(from_user,to_user)
+        V-=1
+        
+        if V % step == 0:
+            m_list.append(V)
+            lcs,acc = takeMeasurement(G_model,verbose)
+            lcs_list.append(lcs)
+            acc_list.append(acc)            
+            if verbose==True:
+                print("Step: {}, LCS = {}, ACC = {:.3g}".format(V,lcs,acc))
+    return G_model, m_list, lcs_list,acc_list
+#%% ADD AND REMOVE MESSAGES
+print("ADDING EDGES")
+G,t_list,lcs_list,acc_list = addMessages(G_A,stepsize,beginTime,endTime,order=order,calcThresh=calcThresh,verbose=True)
 V = 66626
 N = len(G.nodes())
 
-#%% PREPARE FOR WRITING DATA
-saveFile = 'empirical/Results/empirical_{}_{}_s{}.csv'.format(YEAR,MONTH,stepsize)
-try:
-    f = open(saveFile,'w')
-except IOError:
-    print("Problem opening file,adding a number to the end")
-    f= open(saveFile+'1','w')
-    
+print("REMOVING EDGES")
+G,m_list,lcs_list_r,acc_list_r = removeMessages(G,stepsize,0,verbose=True)
+
+edgesAdded = len(lcs_list)  #Number of edges added
+
+#    Add results for removal to end of lists    
+t_list.extend(m_list)
+lcs_list.extend(lcs_list_r)
+acc_list.extend(acc_list_r)
+lcs_unc = np.zeros_like(lcs_list)   #TODO: repeat random removal
+acc_unc = np.zeros_like(acc_list)   #TODO: Calculate ACC
 #%% SAVE RESULTS TO FILE
 
 datestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-f.write('EDGES={}, ITERATIONS={},DATE={}\n'.format(V,iterations,datestamp))
+f.write('EDGES={}, DATE={}, STEPSIZE={}\n'.format(V,datestamp,stepsize))
 f.write('Number of edges,Largest component size,Average Clustering Coefficient\n')
 for i in range(len(t_list)):
-    f.write('{},{},{}\n'.format(t_list[i],lcs_list[i],acc_list[i]))
+    f.write('{},{},{},{},{}\n'.format(t_list[i],lcs_list[i],lcs_unc[i],acc_list[i],acc_unc[i]))
 f.close()
 
 #%% PLOT LCS AND ACC
+
+#DATA COLLAPSE
 iterations = 100
 label = "LCS"
 
-fig = plt.figure()
-ax2 = fig.add_subplot(111)
-ax2.set_title("Empirical: V={}, N={}, s={}, I={} {}".format(V,N,stepsize,iterations,label))
-ax2.set_xlabel("Wall posts, m")
-ax2.set_ylabel("{}".format(label))
-ax2.grid()
-ax2.set_xticks(np.arange(0,max(t_list),10000))
+lcs_normalised = [lcs/N for lcs in lcs_list]
+t_normalised = [t/V for t in t_list]
 
-ax2.plot(t_list,lcs_list)
-
-label = "ACC"
-fig = plt.figure()
-ax2 = fig.add_subplot(111)
-ax2.set_title("Empirical: V={}, N={}, s={}, I={} {}".format(V,N,stepsize,iterations,label))
-ax2.set_xlabel("Wall posts, m")
-ax2.set_ylabel("{}".format(label))
-ax2.grid()
-ax2.set_xticks(np.arange(min(t_list),max(t_list),10000))
-ax2.plot(t_list,acc_list,"orange")
-
-#ax2.plot('LCS',t_list,lcs_list,np.zeros(len(t_list)),V,N,stepsize,1,len(t_list))
-#ax2.plot('ACC',t_list,acc_list,np.zeros(len(t_list)),V,N,stepsize,1,len(t_list))
+#%%PLOT
+import AR_cycle
+label="LCS"
+AR_cycle.plot(label,t_normalised,lcs_normalised,np.zeros(len(t_list)),V,N,stepsize,1,edgesAdded,False,"Empirical")
+label="ACC"
+AR_cycle.plot(label,t_normalised,acc_list,np.zeros(len(t_list)),V,N,stepsize,1,edgesAdded,False,"Empirical")
