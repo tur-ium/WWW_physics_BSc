@@ -205,62 +205,7 @@ for i in range(len(t_list)):
     f.write('{},{},{},{},{}\n'.format(t_list[i],lcs_av[i],lcs_unc[i],acc_av[i],acc_unc[i]))
 f.close()
 
-#%%LOAD DATA
-#dataPath = 'empirical/Results/erdos-renyi_ResultsV=1000N=333.csv'
-#try:
-#    f = open(dataPath,'r')
-#except IOError:
-#    print("Could not open file")
-#
-#rawData = open(dataPath).read().splitlines()
-#unformattedData = []
-#headers = rawData.pop(0)
-#t_list = []
-#lcs_list = []
-#lcs_unc = []
-#for line in rawData:
-#    l = [float(i) for i in line.split(',')]
-#    t_list.append(l[0])
-#    lcs_list.append(l[1])
-#    lcs_unc.append(l[2])
-#
-
-##%% PLOT DATA
-#def plot(label,n_list,l_av,l_unc,V,N,stepsize,iterations,c):
-#    '''Plot results for the addition and removal of edges on the network
-#    label: str
-#        Name of quantity represented
-#    n_list: list
-#        Number of edges in the network at each point of calculation
-#    l_av: list
-#        Averages
-#    l_unc: list
-#            Uncertainties
-#    V: Total number of edges
-#    N: Number of nodes
-#    stepsize: Step size
-#    iterations: Iterations
-#    c: Point in the list of calculated edges at which the removal begins
-#    '''
-#    
-#    fig = plt.figure()
-#    ax2 = fig.add_subplot(211)
-#    ax2.set_title("Erdos-Renyi Model: V={}, N={}, s={}, I={} {}".format(V,N,stepsize,iterations,label))
-#    ax2.set_xlabel("Wall posts, m")
-#    ax2.set_ylabel("{}".format(label))
-#    ax2.errorbar(n_list[:-c+1],l_av[:-c+1],l_unc[:-c+1],label="Adding nodes")
-#    ax2.errorbar(n_list[-c:],l_av[-c:],l_unc[-c:],label="Removing nodes")
-#    ax2.legend()
-#    ax3 = fig.add_subplot(212)
-#    ax3.set_title("Erdos-Renyi Model: V={}, N={}, s={}, I={} {} s.d.".format(V,N,stepsize,iterations,label))
-#    ax3.set_xlabel("Wall posts, m")
-#    ax3.set_ylabel(r"$\sigma$ LCS")
-#    ax3.plot(n_list[:-c+1],l_unc[:-c+1],label="Adding nodes")
-#    ax3.plot(n_list[-c:],l_unc[-c:],label="Removing nodes")
-#    ax3.set_xlim(left=0,right=max(n_list))
-#    ax3.legend()
-#    fig.tight_layout()
-#    fig.show()
+#%%PLOT
 
 import AR_cycle
 AR_cycle.plot('LCS',t_list,lcs_av,lcs_unc,V,N,stepsize,iterations,edgesAdded,model_name=r"ERDŐS-RÉNYI")
