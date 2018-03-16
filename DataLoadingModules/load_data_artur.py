@@ -4,9 +4,10 @@ Created on Wed Mar 14 12:56:04 2018
 
 @author: admin
 """
+import AR_cycle   #This contains the plotting function
 
-V = 66626
-N=23396
+V = 66626  #Parameters for loading data
+N = 23396  #Parameters for loading data
 
 filePath_empirical = 'results/empirical_activity/raw/empirical_2008_DEC_step_100.csv'
 models =['erdos-renyi','configurational','R_model','BA']
@@ -47,11 +48,11 @@ def loadData(filePath,empirical):
         line = raw_line.split(sep=',')
     
         if n > 1:
-       
-            acc_unc = float(line[4])     m = int(line[0])
+            m = int(line[0])
             lcs = float(line[1])
             lcs_unc = float(line[2])
             acc = float(line[3])
+            acc_unc = float(line[4])     
             
             m_list.append(m)
             lcs_list.append(lcs)
@@ -71,11 +72,15 @@ def loadData(filePath,empirical):
             print(line)
         n+=1
     return m_list,lcs_list,lcs_unc_list,acc_list,acc_unc_list
-#%%EXAMPLE#
+#%%EXAMPLE
 m,lcs,lcs_unc,acc,acc_unc=loadData(filePath_model,False)
-
-
+#m,lcs,lcs_unc,acc,acc_unc=loadData(filePath_empirical,False)   #Uncomment for empirical
 
 #%%
-import AR_cycle
-AR_cycle.plot('LCS',m,lcs,lcs_unc,'','','','',int(len(lcs)*.5),plotUncertainty=False,model_name="CONFIGURATIONAL")
+
+#Plot model
+AR_cycle.plot('LCS',m,lcs,lcs_unc,'','','','',int(len(lcs)*.5),plotUncertainty=True,model_name=model)
+AR_cycle.plot('ACC',m,acc,acc_unc,'','','','',int(len(acc)*.5),plotUncertainty=True,model_name=model)
+#Plot empirical
+#AR_cycle.plot('LCS',m,lcs,lcs_unc,'','','','',int(len(lcs)*.5),plotUncertainty=False,model_name="EMPIRICAL")
+#AR_cycle.plot('ACC',m,acc,acc_unc,'','','','',int(len(acc)*.5),plotUncertainty=False,model_name="EMPIRICAL")
