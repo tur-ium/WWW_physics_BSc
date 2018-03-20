@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Mar  9 17:15:46 2018
-
+UPDATED
 @author: admin
 """
 import empirical.Timeslice as ts
