@@ -27,6 +27,7 @@ N = 23396   #Number of active users DEC 2008
 
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d--%H-%M")
 saveFile = 'incoming_results/erdos-renyi_ResultsV={}N={}I={}_{}.csv'.format(V,N,iterations,timestamp)
+saveDirectory = 'incoming_results/'
 
 node_list = list(range(N))   #List of labels for each node
 
@@ -154,6 +155,9 @@ for i in range(iterations):
     G_model,t_list, lcs_list, acc_list = addMessages(G_model,stepsize,V,verbose=False)
     edges_added = len(list(G_model.G.edges()))
     print('POSTS ADDED:{}'.format(edges_added))
+    
+    saveGraph = saveDirectory+'erdos-renyi_GraphV={}N={}-{}.gexf'.format(V,N,i)
+    nx.write_gexf(G_model.G,saveGraph)
     
     print("ITERATION: {} REMOVING EDGES".format(i+1))
     G_model,m_list_r, lcs_list_r, acc_list_r = removeMessages(G_model,stepsize,0,verbose=False)
