@@ -207,16 +207,19 @@ class Model():
     def initiateModel(self, activityNetworkFilePath, numberOfGraphsInEnsemble):
         categoryNodes = self.collectDataFromSocialNetwork(friendshipNetwork)
         nodesInTimeSlice, noOfEdgesInTimeSlice = self.collectDataFromActivityNetwork(activityNetworkFilePath)[1:]
-        
+        self.modelGraph = nx.Graph()
         for i in range(numberOfGraphsInEnsemble):
-            modelGraph, modelEdgeList = self.generateEdgesWithProbability(categoryNodes, noOfEdgesInTimeSlice, i)
-            finalGraph = Model.removingEdges(modelGraph, categoryNodes, i)
-
-no_of_graphs_in_ensemble = 1
-p=0
+            self.modelGraph, modelEdgeList = self.generateEdgesWithProbability(categoryNodes, noOfEdgesInTimeSlice, i)
+            gexfSavePath = generatedDataFilePath+"RModel_graph_V"+str(noOfEdgesInTimeSlice)+"_P"+str(Model.p)+"-"+str(i)+".gexf"
+            nx.write_gexf(self.modelGraph,gexfSavePath)
+            self.finalGraph = Model.removingEdges(self.modelGraph, categoryNodes, i)
+            
+no_of_graphs_in_ensemble = 10
+p=0.25
 Model = Model(p) 
 Model.initiateModel(activityNetworkFilePath, no_of_graphs_in_ensemble)
 nx.write_gexf(Model,generatedDataFilePath+'R_modelp={}.gexf'.format(p))
+
 #When running our model, data for average clustering coefficients - clustering coefficient dictionaries
 #As well as larget component size for a given time slice model must be recorded. These will be written
 #To seperate files, such that data can be read from those files and plotted.
