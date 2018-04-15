@@ -1,4 +1,4 @@
-EDGES=66626, ITERATIONS=5,DATE=2018-04-15 18:37,,
+EDGES=66626, ITERATIONS=20,DATE=2018-04-15,
 Messages,Largest component size,LCS uncertainty,Average Clustering Coefficient,ACC uncertainty
 0,2,0,0,0
 50,2.15,0.692820323,0,0
