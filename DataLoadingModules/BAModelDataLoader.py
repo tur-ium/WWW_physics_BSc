@@ -13,7 +13,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-generatedDataFilePath = "../GeneratedData/BAData/"
+generatedDataFilePath = "../results/BA/raw/"
 stepSize = 50        
 NMAX = 23396
 
