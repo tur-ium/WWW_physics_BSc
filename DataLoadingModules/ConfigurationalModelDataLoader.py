@@ -4,13 +4,11 @@ Created on Fri Apr 20 15:43:42 2018
 
 @author: admin
 """
-import numpy as np
-import matplotlib.pyplot as plt
 
-data_dir = '../results/erdos-renyi/raw/'
-filepath_ER = '{}erdos-renyi_Results_stepsize50_combined.csv'.format(data_dir)
+data_dir = '../results/configurational/raw/'
+filepath_Config = '{}config-model_Results_stepsize50_combined.csv'.format(data_dir)
 
-def loadErdosRenyiData(filePath):
+def loadConfigurationalData(filePath):
     '''Load data from filePath
     
     RETURNS m_list,lcs,lcs_unc,acc,acc_unc
@@ -45,13 +43,13 @@ def loadErdosRenyiData(filePath):
             lcs_unc_list.append(lcs_unc)
             acc_unc_list.append(acc_unc)
         elif n==0:
-            print("METADATA FOR THIS FILE")
-            print(line)
-        if n < 10:
+            print("METADATA FOR THIS FILE:")
+            print("{}\n".format(line))
+        elif n < 10:
             print(line)
         n+=1
     return m_list,lcs_list,lcs_unc_list,acc_list,acc_unc_list
-t_list, lcs, lcs_unc, acc, acc_unc = loadErdosRenyiData(filepath_ER)
+t_list, lcs, lcs_unc, acc, acc_unc = loadConfigurationalData(filepath_Config)
 
 #c: Point in the list of calculated edges at which the removal begins
 c = int(len(t_list)/2)
@@ -67,4 +65,3 @@ lcs_remove = lcs[-c+1:]
 lcs_unc_remove = lcs_unc[-c+1:]
 acc_remove = acc[-c+1:]
 acc_unc_remove = acc_unc[-c+1:]
-
