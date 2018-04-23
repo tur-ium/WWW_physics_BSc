@@ -6,7 +6,7 @@ Created on Mon Apr 16 15:01:45 2018
 @author: RamanSB
 """
 
-import RModelDataLoader as RLoader
+#import RModelDataLoader as RLoader
 import BAModelDataLoader as BALoader
 from matplotlib import pyplot as plt
 import numpy as np
@@ -64,4 +64,4 @@ def showBAModelCollapse(showLCS=True, showACC=True):
     
 
 
-showRModelCollapse(p)
+showBAModelCollapse(p)

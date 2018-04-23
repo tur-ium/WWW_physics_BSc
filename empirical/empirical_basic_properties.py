@@ -14,6 +14,8 @@ font= {'family': 'Arial',
 plt.rc('font',**font)
 plt.rcParams.update({'axes.titlesize':'large',
                      'axes.labelsize': 'large'})
+#PARAMETERS
+edgeListFilePath = '../Data/activity_network_edge_list.txt'
 
 #%%
 #PARAMETERS
@@ -33,7 +35,7 @@ endTime = ts.TIME_DICT[ENDYEAR][ENDMONTH] #NOTE Time at beginning of month
 #Nodes: users
 #Edges: wall posts (undirected)
 #Weights: number of wall posts in timeslice
-loadedGraph = ts.loadGEXF("C:/Users/admin/Documents/Physics/year 3/WWWPhysics-PC/empirical/Data/WeightedNetwork/{}_{}_WeightedGraph.gexf".format(YEAR,MONTH))
+loadedGraph = ts.loadGEXF("../Data/WeightedNetwork/{}_{}_WeightedGraph.gexf".format(YEAR,MONTH))
 
 #%%
 label="Number of users"
@@ -79,7 +81,7 @@ import networkx_extended as nx
 dataLoaded = False
 if not dataLoaded:
     #READ ORIGINAL EDGE_LIST FOR WHOLE NETWORK
-    edgeList = ts.readEdgelistFromPath('empirical/Data/activity_network_edge_list.txt',isWeighted=True)
+    edgeList = ts.readEdgelistFromPath(edgeListFilePath,isWeighted=True)
     
     #TAKE THE TIMESLICE FOR THE DESIRED MONTH
     #format 1: ((source,target),timestamp)
@@ -193,5 +195,11 @@ hourly_interactions_av = hourly_interactions_sum/days
 print("DONE")
 
 #%%
+label = "Largest Component Size"
 from measure_new import computeLCS
-computeLCS(loadedGraph)
+lcs = computeLCS(loadedGraph)
+print("{} {:.3g}".format(label, lcs))
+#%%
+label = "Average Clustering Coefficient"
+acc = nx.average_clustering(loadedGraph)
+print("{} {:.3g}".format(label, acc))

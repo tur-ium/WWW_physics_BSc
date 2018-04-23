@@ -15,7 +15,7 @@ Created on Fri Mar 16 15:09:16 2018
 import numpy as np
 from matplotlib import pyplot as plt
 
-generatedDataFilePath = "/Users/RamanSB/Documents/University/3rd-Year Physics/3rd Year Project/GeneratedData/"  
+generatedDataFilePath = "../results/R_model/raw/"  
 p=0.5
 stepSize = 50 #Data has been taken every 50 messages.
 NMAX = 63731
