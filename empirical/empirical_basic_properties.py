@@ -14,8 +14,6 @@ font= {'family': 'Arial',
 plt.rc('font',**font)
 plt.rcParams.update({'axes.titlesize':'large',
                      'axes.labelsize': 'large'})
-#PARAMETERS
-edgeListFilePath = '../Data/activity_network_edge_list.txt'
 
 #%%
 #PARAMETERS
@@ -25,6 +23,8 @@ YEAR = '2008'
 MONTH = 'DEC'
 ENDYEAR = '2009'   
 ENDMONTH = 'JAN' #End at the BEGINNING of this month
+edgeListFilePath = '../Data/activity_network_edge_list.txt'
+gexf_filePath = "../Data/WeightedNetwork/{}_{}_WeightedGraph.gexf".format(YEAR,MONTH)
 
 beginTime = ts.TIME_DICT[YEAR][MONTH]  #NOTE Time at beginning of month
 endTime = ts.TIME_DICT[ENDYEAR][ENDMONTH] #NOTE Time at beginning of month
@@ -35,7 +35,7 @@ endTime = ts.TIME_DICT[ENDYEAR][ENDMONTH] #NOTE Time at beginning of month
 #Nodes: users
 #Edges: wall posts (undirected)
 #Weights: number of wall posts in timeslice
-loadedGraph = ts.loadGEXF("../Data/WeightedNetwork/{}_{}_WeightedGraph.gexf".format(YEAR,MONTH))
+loadedGraph = ts.loadGEXF(gexf_filePath)
 
 #%%
 label="Number of users"
