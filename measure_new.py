@@ -78,7 +78,43 @@ def compareNeighbourDegree(G):
     print("Average of neighbour degree:{}, average degree: {}".format(k_nn_av,k_av))
     
 #Plot distribution
+'''
 def plot_distribution(d,name,n=1000):
+    Plots loglog frequency and cumulative distributions for a quantity
+    PARAMETERS
+    ---
+    d: dictionary
+        Dictionary of values to be histogrammed
+    name: string
+        Name of the quantity represented by the list of values
+    n: int
+        Number of bins
+    
+    
+#    log_max_degree = np.log10(max(d.values()))
+    n=len(d)
+    bin_edges = np.linspace(0,max(d.values()),n-1)
+    bin_edges = list(bin_edges)
+    bin_edges.insert(0,0.)
+    #print(bin_edges)
+    
+    #TODO: Loop through and create a dictionary {degree: frequency}
+    
+    plt.figure()
+    plt.title('{} distribution'.format(name.capitalize()))
+    plt.xlabel('log({})'.format(name))
+    plt.ylabel('log(Frequency)')
+    start = time.time()
+    degree_dist,bins = np.histogram(list(d.values()),bins=bin_edges)
+    end = time.time()
+    print('Time to perform histogramming: {} s'.format(end-start))
+    bin_centres = [sum(bin_edges[i:i+1]) for i in range(0,len(bin_edges)-1)]
+    plt.loglog(bin_centres,degree_dist,'+')
+    plt.xlim(1,1e4)
+    plt.grid()
+'''
+
+def plot_distribution(d1, d2, name,n=1000):
     '''Plots loglog frequency and cumulative distributions for a quantity
     PARAMETERS
     ---
@@ -90,26 +126,38 @@ def plot_distribution(d,name,n=1000):
         Number of bins
     ''' 
 #    log_max_degree = np.log10(max(d.values()))
-    n=len(d)
-    bin_edges = np.linspace(0,max(d.values()),n-1)
+    n=len(d1)
+    bin_edges = np.linspace(0,max(d1.values()),n-1)
     bin_edges = list(bin_edges)
     bin_edges.insert(0,0.)
     #print(bin_edges)
+    
+    n=len(d2)
+    bin_edges_2 = np.linspace(0, max(d2.values()),n-1)
+    bin_edges_2 = list(bin_edges)
+    bin_edges_2.insert(0,0.)
+    degree_dist_2, bins_2 = np.histogram(list(d2.values()), bins=bin_edges_2)
+    bin_centres_2 = [sum(bin_edges_2[i:i+1]) for i in range(0, len(bin_edges_2)-1)]
+    
+    
     
     #TODO: Loop through and create a dictionary {degree: frequency}
     
     plt.figure()
     start = time.time()
-    degree_dist,bins = np.histogram(list(d.values()),bins=bin_edges)
+    degree_dist,bins = np.histogram(list(d1.values()),bins=bin_edges)
     end = time.time()
     print('Time to perform histogramming: {} s'.format(end-start))
     bin_centres = [sum(bin_edges[i:i+1]) for i in range(0,len(bin_edges)-1)]
-    plt.loglog(bin_centres,degree_dist,'+')
+    plt.loglog(bin_centres,degree_dist,'+', label="Emperical")
+    plt.loglog(bin_centres_2, degree_dist_2, 'x', label="{}".format(name))
+    plt.legend()
     plt.xlim(1,1e4)
     plt.grid()
-    plt.title('{} distribution'.format(name.capitalize()))
-    plt.xlabel('log({})'.format(name))
+    plt.title('Degree Distribution'.format(name))
+    plt.xlabel('log(Degree)')
     plt.ylabel('log(Frequency)')
+    
     
 #    plt.figure()
 #    degree_dist,degrees,patches = plt.hist(d.values(),bins=bin_edges,cumulative=True)
