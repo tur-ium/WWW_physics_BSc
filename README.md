@@ -1,5 +1,10 @@
 # Data and Tools for BSci project on "The World Wide Web as a Physical Medium"
 
+## Abstract
+
+Using a real-world network of wall-posting behaviour we analysed the interaction of 23,396 Facebook users in December 2008. Applying techniques from thermodynamics, statistical mechanics and network theory, we identifed a second-order phase transition in the largest component of the network and found that the network exhibited elastic hysteresis. To the model the data, we adapted three standard random network generation processes: the Erdos-Renyi, Configurational and Barabasi-Albert models to produce weighted networks and developed a fourth model, taking a friendship network as a parameter, to understand the
+effects of different forms of user behaviour. We used the evolution of the Largest Component Size (LCS), the Average Clustering Coefficient (ACC) and the weighted degree distributions to compare the empirical data with the models. Different models reproduced different aspects of the  structure of social interaction on social media better than others, however further work is required to form a realistic model
+
 ## Paper
 
 https://www.academia.edu/37613533/Phase_Transitions_on_Facebook
