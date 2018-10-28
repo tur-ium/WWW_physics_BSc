@@ -1,5 +1,11 @@
 # Data and Tools for BSci project on "The World Wide Web as a Physical Medium"
 
+## Paper
+
+https://www.academia.edu/37613533/Phase_Transitions_on_Facebook
+
+## Project proposal
+
 We are accustomed to hearing the terms "social media" or "mass media" in reference to technology such as the world wide web (WWW). In physics, however this term bears different connotations involving understanding the behaviour of systems as we change its surroundings or structure. This begs the question - what parallels are there between the structure and dynamics of "social" media on the WWW and "physical" media?
 
 Online social networks, which quantify human behaviour in a way not possible before, have become an important part of social relations worldwide, with sites such as Facebook exceeding 2 billion users. These media are of great significance in many industries ranging from government, perhaps in pushing across a certain political agenda, to marketing companies to advertise and increase sales of a product or service. 
@@ -12,6 +18,8 @@ Other considered components are:
 *	Analysing the exponents of power-law distributions, for instance of the degree distribution 
 *	Investigating the applicability of thermodynamics and whether state variables, such as entropy and internal energy, can be meaningfully assigned
 * Using timestamped data to investigate how certain metrics of clustering vary over time
+
+## References
 
 [1]	M. Newman, Networks : an introduction. Oxford: Oxford University Press, 2010.
 
